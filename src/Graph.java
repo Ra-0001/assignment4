@@ -2,7 +2,7 @@ import java.util.*;
 
 public class Graph {
 
-    private Map<Integer, List<Integer>> adjacencyList;
+    private Map<Integer, List<Edge>> adjacencyList;
 
     public Graph() {
         adjacencyList = new HashMap<>();
@@ -12,19 +12,33 @@ public class Graph {
         adjacencyList.putIfAbsent(v.getId(), new ArrayList<>());
     }
 
-    public void addEdge(int from, int to) {
-        adjacencyList.get(from).add(to);
-        adjacencyList.get(to).add(from);
+    public void addEdge(int from, int to, int weight) {
+
+        Vertex source = new Vertex(from);
+        Vertex destination = new Vertex(to);
+
+        Edge edge = new Edge(source, destination, weight);
+
+        adjacencyList.get(from).add(edge);
+
+        Edge reverse = new Edge(destination, source, weight);
+        adjacencyList.get(to).add(reverse);
     }
 
     public void printGraph() {
-        System.out.println("Graph:");
+
+        System.out.println("Weighted Graph:");
 
         for (int vertex : adjacencyList.keySet()) {
+
             System.out.print(vertex + " -> ");
 
-            for (int neighbor : adjacencyList.get(vertex)) {
-                System.out.print(neighbor + " ");
+            for (Edge edge : adjacencyList.get(vertex)) {
+
+                System.out.print(
+                        edge.getDestination().getId()
+                                + "(" + edge.getWeight() + ") "
+                );
             }
 
             System.out.println();
@@ -44,11 +58,15 @@ public class Graph {
         while (!queue.isEmpty()) {
 
             int current = queue.poll();
+
             System.out.print(current + " ");
 
-            for (int neighbor : adjacencyList.get(current)) {
+            for (Edge edge : adjacencyList.get(current)) {
+
+                int neighbor = edge.getDestination().getId();
 
                 if (!visited.contains(neighbor)) {
+
                     visited.add(neighbor);
                     queue.add(neighbor);
                 }
@@ -63,20 +81,84 @@ public class Graph {
         Set<Integer> visited = new HashSet<>();
 
         System.out.print("DFS Traversal: ");
+
         dfsHelper(start, visited);
+
         System.out.println();
     }
 
     private void dfsHelper(int current, Set<Integer> visited) {
 
         visited.add(current);
+
         System.out.print(current + " ");
 
-        for (int neighbor : adjacencyList.get(current)) {
+        for (Edge edge : adjacencyList.get(current)) {
+
+            int neighbor = edge.getDestination().getId();
 
             if (!visited.contains(neighbor)) {
+
                 dfsHelper(neighbor, visited);
             }
         }
+    }
+
+
+    public void dijkstra(int start) {
+
+        int size = adjacencyList.size();
+
+        int[] distance = new int[size];
+        boolean[] visited = new boolean[size];
+
+        Arrays.fill(distance, Integer.MAX_VALUE);
+
+        distance[start] = 0;
+
+        for (int i = 0; i < size - 1; i++) {
+
+            int current = findMinDistance(distance, visited);
+
+            visited[current] = true;
+
+            for (Edge edge : adjacencyList.get(current)) {
+
+                int neighbor = edge.getDestination().getId();
+                int weight = edge.getWeight();
+
+                if (!visited[neighbor]
+                        && distance[current] != Integer.MAX_VALUE
+                        && distance[current] + weight < distance[neighbor]) {
+
+                    distance[neighbor] = distance[current] + weight;
+                }
+            }
+        }
+
+        System.out.println("Shortest distances from vertex " + start + ":");
+
+        for (int i = 0; i < distance.length; i++) {
+
+            System.out.println(
+                    "To vertex " + i + " = " + distance[i]
+            );
+        }
+    }
+    private int findMinDistance(int[] distance, boolean[] visited) {
+
+        int min = Integer.MAX_VALUE;
+        int minIndex = -1;
+
+        for (int i = 0; i < distance.length; i++) {
+
+            if (!visited[i] && distance[i] < min) {
+
+                min = distance[i];
+                minIndex = i;
+            }
+        }
+
+        return minIndex;
     }
 }

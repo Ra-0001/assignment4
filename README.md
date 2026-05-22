@@ -109,3 +109,26 @@ DFS can use more recursion depth and may not find shortest path.
 In this assignment I learned how graphs work and how BFS and DFS traversal algorithms visit vertices differently.
 
 One challenge was understanding recursion in DFS and using adjacency lists correctly. I also learned how to measure execution time using System.nanoTime().
+
+# Bonus Task - Dijkstra's Algorithm
+
+## Overview
+
+As an additional task, Dijkstra’s Algorithm was implemented to find the shortest path from a starting vertex to all other vertices in the graph.
+
+The graph was updated to support weighted edges.
+
+---
+
+## Changes Made
+
+### Edge Class
+The Edge class was modified by adding:
+- weight field
+- getter for weight
+
+Example:
+```java
+private int weight;
+
+- also overall was improved and added addtional codes in experiment and graph classes in order to stabiize the running 

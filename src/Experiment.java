@@ -18,22 +18,39 @@ public class Experiment {
 
         long dfsTime = dfsEnd - dfsStart;
 
+        long dijkstraStart = System.nanoTime();
+
+        g.dijkstra(0);
+
+        long dijkstraEnd = System.nanoTime();
+
+        long dijkstraTime = dijkstraEnd - dijkstraStart;
+
         System.out.println("BFS Time: " + bfsTime + " ns");
+
         System.out.println("DFS Time: " + dfsTime + " ns");
+
+        System.out.println("Dijkstra Time: " + dijkstraTime + " ns");
     }
 
     public void runMultipleTests() {
 
         System.out.println("\n===== SMALL GRAPH =====");
+
         Graph small = createGraph(10);
+
         runTraversals(small);
 
         System.out.println("\n===== MEDIUM GRAPH =====");
+
         Graph medium = createGraph(30);
+
         runTraversals(medium);
 
         System.out.println("\n===== LARGE GRAPH =====");
+
         Graph large = createGraph(100);
+
         runTraversals(large);
     }
 
@@ -42,14 +59,19 @@ public class Experiment {
         Graph g = new Graph();
 
         for (int i = 0; i < size; i++) {
+
             g.addVertex(new Vertex(i));
         }
 
         for (int i = 0; i < size - 1; i++) {
-            g.addEdge(i, i + 1);
+
+            int weight = (i % 9) + 1;
+
+            g.addEdge(i, i + 1, weight);
 
             if (i + 2 < size) {
-                g.addEdge(i, i + 2);
+
+                g.addEdge(i, i + 2, weight + 2);
             }
         }
 
@@ -57,6 +79,7 @@ public class Experiment {
     }
 
     public void printResults() {
-        System.out.println("Experiments finished.");
+
+        System.out.println("\nAll experiments finished.");
     }
 }
